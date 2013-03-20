@@ -1,0 +1,24 @@
+
+buildscript {
+	repositories {
+	  mavenLocal()
+	  mavenCentral()
+	}
+	dependencies {
+		classpath 'com.jfolson:gradle-plugin-r:0.1-SNAPSHOT'
+	}
+}
+  
+apply plugin: 'rpackage'
+
+version = "0.1"
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+rpackage {
+  srcDir = project.file('pkg')
+  name = 'rQuery'
+}
+
