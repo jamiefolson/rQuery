@@ -1,6 +1,8 @@
 
 
-.env = new.env()
+.node.fn = new.env()
+
+.nodeset.fn = new.env()
 
 setClass("rQueryNode", representation(node = "XMLAbstractNode"))
 
@@ -13,6 +15,19 @@ rQueryNode <- function(elem){
 }
 
 setClass("rQueryNodeSet",contains="list")
+
+setGeneric("rQuery.select",function(elem,query){standardGeneric("rQuery.select")})
+setGeneric("rQuery.html",function(elem,value){standardGeneric("rQuery.html")})
+setGeneric("rQuery.attr",function(elem,value,...){standardGeneric("rQuery.attr")})
+setGeneric("rQuery.class",function(elem,value,...){standardGeneric("rQuery.class")})
+setGeneric("rQuery.hasClass",function(elem,value){standardGeneric("rQuery.hasClass")})
+setGeneric("rQuery.addClass",function(elem,value){standardGeneric("rQuery.addClass")})
+setGeneric("rQuery.add",function(elem,value){standardGeneric("rQuery.add")})
+setGeneric("rQuery.append",function(elem,value){standardGeneric("rQuery.append")})
+setGeneric("rQuery.insertBefore",function(elem,value){standardGeneric("rQuery.insertBefore")})
+setGeneric("rQuery.insertAfter",function(elem,value){standardGeneric("rQuery.insertAfter")})
+setGeneric("rQuery.before",function(elem,value){standardGeneric("rQuery.before")})
+setGeneric("rQuery.after",function(elem,value){standardGeneric("rQuery.after")})
 
 rQueryNodeSet <- function(nodeset){
     nodeset = unlist(nodeset)
@@ -38,19 +53,21 @@ setMethod("show","rQueryNodeSet",function(object){
 })
 
 setMethod("$","rQueryNode",function(x,name){
-          f = get(name,envir=.env)
-          elem = x
-          function(...){
-              f(elem,...)
-          }
+              function(...){
+                  do.call(paste0("rQuery.",name),list(x,...))
+              }
 })
 
 setMethod("$","rQueryNodeSet",function(x,name){
-          f = get(name,envir=.env)
-          obj = x
-          function(...){
-              rQueryNodeSet(lapply(obj@.Data,f,...))
+    if (hasMethod(paste0("rQuery.",name),"rQueryNodeSet")){
+        function(...){
+            do.call(paste0("rQuery.",name),list(x,...))
+        }
+    } else {
+        function(...){
+            lapply(x@.Data,function(elem){do.call(paste0("rQuery.",name),list(elem,...))})
           }
+      }
 })
 
 
@@ -77,30 +94,50 @@ setMethod("$","rQueryNodeSet",function(x,name){
         attrs
     }
 }
-assign("attr",.html_attr,envir=.env)
+setMethod("rQuery.attr","rQueryNode",.html_attr)
 
 
-.class = function(elem,klass){
+.html_class = function(elem,value){
     attrs = XML:::xmlAttrs(elem@node)
-    if (missing(klass)){
-        class_idx = match("class",attrs)
+    if (missing(value)){
+        class_idx = match("class",names(attrs))
         if (is.na(class_idx)){
             NULL
         } else {
             attrs[[class_idx]]
         }
     } else {
-        if ("class" %in% attrs) {
-            otherklass = attrs$class
-            if (!klass %in% strsplit(otherklass,",")) {
-                klass = paste(otherklass,klass,sep=",")
+        if ("class" %in% names(attrs)) {
+            othervalue = attrs[["class"]]
+            if (!value %in% strsplit(othervalue,",")[[1]]) {
+                value = paste(othervalue,value,sep=",")
             }
         }
-        elem@node = XML:::addAttributes(elem@node,class=klass)
+        elem@node = XML:::addAttributes(elem@node,class=value)
         elem
     }
 }
-assign("class",.class,envir=.env)
+setMethod("rQuery.class","rQueryNode",.html_class)
+
+setMethod("rQuery.addClass","rQueryNode",function(elem,value){
+    attrs = XML:::xmlAttrs(elem@node)
+    if (missing(value)){
+        stop("No new class provided")
+    } else {
+        .html_class(elem,value)
+        elem
+    }
+})
+
+setMethod("rQuery.hasClass","rQueryNode",function(elem,value){
+    attrs = XML:::xmlAttrs(elem@node)
+    if (missing(value)){
+        stop("No class provided")
+    } else {
+        othervalue = .html_class(elem)
+        value %in% strsplit(othervalue,",")
+    }
+})
 
 .html = function(elem,value) {
     if (missing(value)){
@@ -109,12 +146,51 @@ assign("class",.class,envir=.env)
         if (is.character(value)) {
             value <- querySelectorAll(XML:::htmlParse(value,asText=T),"body >*")
         }
-        removeChildren(elem@node,kids=xmlChildren(elem@node))
-        xmlChildren(elem@node) <- value
+        addChildren(elem@node,kids=value,append=FALSE)
     }
 }
-assign("html",.html,envir=.env)
+setMethod("rQuery.html","rQueryNode",.html)
 
+.html_append = function(elem,value) {
+    if (is.character(value)) {
+        value <- querySelectorAll(XML:::htmlParse(value,asText=T),"body >*")
+    }
+    addChildren(elem@node,value)
+}
+setMethod("rQuery.append","rQueryNode",.html_append)
+
+.html_insert = function(elem,value) {
+    if (is.character(value)) {
+        value <- querySelectorAll(XML:::htmlParse(value,asText=T),"body >*")
+    }
+    addChildren(elem@node,value,at=0)
+}
+setMethod("rQuery.before","rQueryNode",.html_insert)
+
+setMethod("rQuery.insertBefore","rQueryNode",function(elem,value){
+    rQueryNodeSet(lapply(rQuery(xmlRoot(elem),value),.htmlinsert,elem))
+})
+
+setMethod("rQuery.insertAfter","rQueryNode",function(elem,value){
+    rQueryNodeSet(lapply(rQuery(xmlRoot(elem),value),.htmlappend,elem))
+})
+
+.rquery_add = function(elem,value) {
+    if (is.character(value)) {
+        value <- querySelectorAll(XML:::htmlParse(value,asText=T),"body >*")
+    }
+    rQueryNodeSet(append(elem@nodeset,value))
+}
+setMethod("rQuery.add","rQueryNode",.rquery_add)
+setMethod("rQuery.add","rQueryNodeSet",.rquery_add)
+
+#' jQuery for R
+#' 
+#' @param elem html element to query
+#' @param query CSS selector query
+#' @return XMLAbstractNode wrapped in a rQueryNodeSet
+#' @export
+#' 
 rQuery <- function(elem,query) {
     node = elem
     if (inherits(elem,"rQueryNode")){
@@ -132,6 +208,7 @@ rQuery <- function(elem,query) {
     }
 }
 `%$%` <- rQuery
-assign("select",rQuery,envir=.env)
+setMethod("rQuery.select","rQueryNode",rQuery)
+setMethod("rQuery.select","rQueryNodeSet",function(elem,query){rQueryNodeSet(lapply(elem,rQuery,query))})
 
 
