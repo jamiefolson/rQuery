@@ -19,6 +19,7 @@ repositories {
 
 rpackage {
   srcDir = project.file('pkg')
+  buildDir = project.file('pkg')
   name = 'rQuery'
 }
 
