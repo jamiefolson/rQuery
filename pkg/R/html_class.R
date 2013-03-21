@@ -20,6 +20,16 @@
             XML:::addAttributes(elem,class=value)
     }
 }
+#' Get the class value(s) for the first element in the set of matched 
+#' elements or add a class for every matched element.
+#' 
+#' @param rquery rQueryResult container 
+#' @param class a new class value
+#' @returnType list or rQueryResult
+#' @return list of class values or a rQueryResult with the modified elements
+#' 
+#' @author jfolson
+#' @exportMethod rQuery.class
 setGeneric("rQuery.class",function(rquery,value,...){standardGeneric("rQuery.class")})
 setMethod("rQuery.class","rQueryResult",
           function(rquery,value){
@@ -30,6 +40,14 @@ setMethod("rQuery.class","rQueryResult",
               }
           })
 
+#' Adds the specified class(es) to each of the set of matched elements.
+#' @param rquery rQueryResult container 
+#' @param class a new class value
+#' @returnType rQueryResult 
+#' @return rQueryResult with the modified elements
+#' 
+#' @author jfolson
+#' @exportMethod rQuery.addClass
 setGeneric("rQuery.addClass",function(rquery,value){standardGeneric("rQuery.addClass")})
 setMethod("rQuery.addClass","rQueryResult",function(rquery,value){
     if (missing(value)){
@@ -40,6 +58,15 @@ setMethod("rQuery.addClass","rQueryResult",function(rquery,value){
     }
 })
 
+#' Determine whether any of the matched elements are assigned the given class.
+#' 
+#' @param rquery rQueryResult container 
+#' @param class a new class value
+#' @returnType boolean
+#' @return vector of booleans
+#' 
+#' @author jfolson
+#' @exportMethod rQuery.hasClass
 setGeneric("rQuery.hasClass",function(rquery,value){standardGeneric("rQuery.hasClass")})
 setMethod("rQuery.hasClass","rQueryResult",function(rquery,value){
     if (missing(value)){
@@ -52,5 +79,3 @@ setMethod("rQuery.hasClass","rQueryResult",function(rquery,value){
         lapply(rquery,hasClass)
     }
 })
-
-
