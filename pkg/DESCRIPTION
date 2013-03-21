@@ -5,7 +5,21 @@ Title: Manipulate HTML in R with (approximately) the syntax of jQuery
 Date: 2013-03-19
 Author: Jamie F Olson
 Maintainer: Jamie F Olson <self@jfolson.com>
-Description: Enances the XML and selectr packages to provide a convenient syntax for manipulating HTML using R.  As much as possible, this project adheres to the syntax and semantics of the jQuery library for javascript(http://api.jquery.com/)
+Description: Enances the XML and selectr packages to provide a convenient
+    syntax for manipulating HTML using R.  As much as possible, this project
+    adheres to the syntax and semantics of the jQuery library for
+    javascript(http://api.jquery.com/)
 License: MIT
-Depends: R (>= 2.14), XML, selectr, methods
+Depends:
+    R (>= 2.14),
+    XML,
+    selectr,
+    methods
 Enhances: XML, selectr
+Collate:
+    '0rQuery.R'
+    'html_attr.R'
+    'html_class.R'
+    'html_insert.R'
+    'html.R'
+    'rQuery-internal.R'
