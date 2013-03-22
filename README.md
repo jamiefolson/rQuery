@@ -101,4 +101,5 @@ In addition to the regular R syntax for calling methods, `rQuery` emulates the `
 </ul></body></html>
 ```
 
-
+## Package Documentation
+You can find the generated package documentation [here](http://jamiefolson.github.com/rQuery/man/00Index.html).
