@@ -5,13 +5,13 @@ Bringing the [`jQuery`](http://api.jquery.com/) syntax to R.
 
 Install with `devtools`:
 
-```
+```r
 library(devtools)
 install_github("rQuery","jamiefolson",subdir="pkg")
 ```
 
 To show how things work, consider the following document fragment:
-```
+```html
 <html>
 <body>
 <ul class="level-1">
@@ -40,7 +40,7 @@ important generic function, I thought it best not to overwrite it.  Instead,
 you can access the basic `jQuery` selector with the function `rQuery` or its
 alias `%$%`.
 
-```
+```r
 > library(XML)
 > library(rQuery)
 Loading required package: selectr
@@ -59,7 +59,7 @@ Loading required package: selectr
 
 `jQuery` methods are implemented as `S4` methods on the class `rQueryResult`.
 
-```
+```r
 > showMethods(classes="rQueryResult")
 ...
 Function: rQuery.add (package rQuery)
@@ -74,7 +74,7 @@ rquery="rQueryResult"
 
 In addition to the regular R syntax for calling methods, `rQuery` emulates the `jQuery` "chaining" syntax.
 
-```
+```r
 > `%$%`(doc,"body")$find("ul.level-2")$attr(x="value")$addClass("myclass")$prepend("<li>New item</li>")$addClass("AB")
 [[1]]
 <li class="AB">New item</li> 
