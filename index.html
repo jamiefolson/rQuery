@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Rquery by jamiefolson</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Rquery</h1>
+          <h2>Bringing the `jQuery` syntax to R</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/jamiefolson/rQuery/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/jamiefolson/rQuery/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/jamiefolson/rQuery" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>rQuery</h1>
+
+<p>Bringing the <a href="http://api.jquery.com/"><code>jQuery</code></a> syntax to R.</p>
+
+<p>Install with <code>devtools</code>:</p>
+
+<div class="highlight"><pre><span class="c">library(devtools)</span>
+<span class="c">install_github("rQuery","jamiefolson",subdir="pkg")</span>
+</pre></div>
+
+<p>To show how things work, consider the following document fragment:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"level-1"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-i"</span><span class="nt">&gt;</span>I<span class="nt">&lt;/li&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-ii"</span><span class="nt">&gt;</span>II
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"level-2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-a"</span><span class="nt">&gt;</span>A<span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-b"</span><span class="nt">&gt;</span>B
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"level-3"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-1"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-2"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-3"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-c"</span><span class="nt">&gt;</span>C<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"item-iii"</span><span class="nt">&gt;</span>III<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>Currently only a few <code>jQuery</code> functions are implemented.  Since <code>$</code> is a pretty
+important generic function, I thought it best not to overwrite it.  Instead,
+you can access the basic <code>jQuery</code> selector with the function <code>rQuery</code> or its
+alias <code>%$%</code>.</p>
+
+<div class="highlight"><pre><span class="c">&gt; library(XML)</span>
+<span class="c">&gt; library(rQuery)</span>
+<span class="c">Loading required package: selectr</span>
+<span class="c">&gt; doc = htmlParse("tmp.html")</span>
+<span class="c">&gt; `%$%`(doc,"ul.level-2")</span>
+<span class="c">[[1]]</span>
+<span class="c">&lt;ul class="level-2"&gt;&lt;li class="item-a"&gt;A&lt;/li&gt;</span>
+<span class="c">      &lt;li class="item-b"&gt;B</span>
+<span class="c">        &lt;ul class="level-3"&gt;&lt;li class="item-1"&gt;1&lt;/li&gt;</span>
+<span class="c">          &lt;li class="item-2"&gt;2&lt;/li&gt;</span>
+<span class="c">          &lt;li class="item-3"&gt;3&lt;/li&gt;</span>
+<span class="c">        &lt;/ul&gt;&lt;/li&gt;</span>
+<span class="c">      &lt;li class="item-c"&gt;C&lt;/li&gt;</span>
+<span class="c">    &lt;/ul&gt; </span>
+</pre></div>
+
+<p><code>jQuery</code> methods are implemented as <code>S4</code> methods on the class <code>rQueryResult</code>.</p>
+
+<div class="highlight"><pre><span class="c">&gt; showMethods(classes="rQueryResult")</span>
+<span class="c">...</span>
+<span class="c">Function: rQuery.add (package rQuery)</span>
+<span class="c">rquery="rQueryResult"</span>
+
+<span class="c">Function: rQuery.addClass (package rQuery)</span>
+<span class="c">rquery="rQueryResult"</span>
+<span class="c">...</span>
+<span class="c">&gt; rQuery.class(`%$%`(doc,"ul"))</span>
+<span class="c">[1] "level-1"</span>
+</pre></div>
+
+<p>In addition to the regular R syntax for calling methods, <code>rQuery</code> emulates the <code>jQuery</code> "chaining" syntax.</p>
+
+<div class="highlight"><pre><span class="c">&gt; `%$%`(doc,"body")$find("ul.level-2")$attr(x="value")$addClass("myclass")$prepend("&lt;li&gt;New item&lt;/li&gt;")$addClass("AB")</span>
+<span class="c">[[1]]</span>
+<span class="c">&lt;li class="AB"&gt;New item&lt;/li&gt; </span>
+
+<span class="c">&gt; doc</span>
+<span class="c">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"&gt;</span>
+<span class="c">&lt;html&gt;&lt;body&gt;&lt;ul class="level-1"&gt;</span>
+<span class="c">&lt;li class="item-i"&gt;I&lt;/li&gt;</span>
+<span class="c">  &lt;li class="item-ii"&gt;II</span>
+<span class="c">    &lt;ul class="level-2,myclass" x="value"&gt;</span>
+<span class="c">&lt;li class="AB"&gt;New item&lt;/li&gt;</span>
+<span class="c">&lt;li class="item-a"&gt;A&lt;/li&gt;</span>
+<span class="c">      &lt;li class="item-b"&gt;B</span>
+<span class="c">        &lt;ul class="level-3"&gt;</span>
+<span class="c">&lt;li class="item-1"&gt;1&lt;/li&gt;</span>
+<span class="c">          &lt;li class="item-2"&gt;2&lt;/li&gt;</span>
+<span class="c">          &lt;li class="item-3"&gt;3&lt;/li&gt;</span>
+<span class="c">        &lt;/ul&gt;</span>
+<span class="c">&lt;/li&gt;</span>
+<span class="c">      &lt;li class="item-c"&gt;C&lt;/li&gt;</span>
+<span class="c">    &lt;/ul&gt;</span>
+<span class="c">&lt;/li&gt;</span>
+<span class="c">  &lt;li class="item-iii"&gt;III&lt;/li&gt;</span>
+<span class="c">&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</span>
+</pre></div>
+        </section>
+
+        <footer>
+          Rquery is maintained by <a href="https://github.com/jamiefolson">jamiefolson</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
