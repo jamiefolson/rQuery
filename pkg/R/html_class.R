@@ -12,8 +12,8 @@
             attrs = XML:::xmlAttrs(elem)
             if ("class" %in% names(attrs)) {
                 othervalue = attrs[["class"]]
-                if (!value %in% strsplit(othervalue,",")[[1]]) {
-                    value = paste(othervalue,value,sep=",")
+                if (!value %in% strsplit(othervalue," ")[[1]]) {
+                    value = paste(othervalue,value,sep=" ")
                 }
             }
             #  This returns the new node for non-internal `XML` nodes

@@ -101,16 +101,4 @@ In addition to the regular R syntax for calling methods, `rQuery` emulates the `
 </ul></body></html>
 ```
 
-# Warning
-There appears to be a bug in either `XML` or `selectr` which results in no results when selecting one class out of multiple classes.
-
-Example.  After the above manipulations and despite the fact that this query worked there:
-```
-> `%$%`(doc,"body")$find("ul.level-2")
-list()
-> querySelectorAll(doc,"ul.level-2")
-list()
-attr(,"class")
-[1] "XMLNodeSet"
-```
 
